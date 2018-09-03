@@ -21,6 +21,8 @@ from .q_pixmap_transition import (
 from .qt_constraints_widget import QtConstraintsWidget
 from .qt_stack_item import QtStackItem
 
+from qtpy import PYQT5
+
 
 TRANSITION_TYPE = {
     'slide': QSlideTransition,
@@ -152,8 +154,14 @@ class QStack(QStackedWidget):
         size = self.size()
         src_widget.resize(size)
         dst_widget.resize(size)
-        src_pixmap = QPixmap.grabWidget(src_widget)
-        dst_pixmap = QPixmap.grabWidget(dst_widget)
+
+        if PYQT5:
+            src_pixmap = src_widget.grab()
+            dst_pixmap = dst_widget.grab()
+        else:
+            src_pixmap = QPixmap.grabWidget(src_widget)
+            dst_pixmap = QPixmap.grabWidget(dst_widget)
+
         out_pixmap = QPixmap(size)
         transition.setPixmaps(src_pixmap, dst_pixmap, out_pixmap)
 
